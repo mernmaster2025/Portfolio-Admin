@@ -15,13 +15,25 @@
   "header": {
     "variant": "modern",
     "position": "sticky",
+    "floating": false,
     "animation": "slide-down",
     "showLogo": true,
+    "logoType": "text",
     "logoText": "Portfolio",
+    "logoImage": "",
+    "logoHeight": 32,
     "showNavigation": true,
     "showThemeSwitcher": true,
     "showResumeButton": true,
-    "showSocialIcons": true
+    "showSocialIcons": true,
+    "background": "blur",
+    "backgroundColor": "#101622",
+    "gradientFrom": "#2563eb",
+    "gradientTo": "#8b5cf6",
+    "gradientAngle": 135,
+    "navStyle": "text",
+    "height": 64,
+    "showBorder": false
   },
   "footer": {
     "variant": "corporate",

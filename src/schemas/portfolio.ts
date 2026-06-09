@@ -78,16 +78,37 @@ export const headerSchema = z.object({
   variant: z
     .enum(["classic", "centered", "modern", "sidebar", "minimal"])
     .default("modern"),
-  position: z.enum(["static", "sticky", "fixed", "floating"]).default("sticky"),
+  // Position behaviour:
+  //  static — scrolls with the page
+  //  fixed  — always pinned and visible at the top
+  //  sticky — pinned, but hides on scroll down and reveals on scroll up
+  position: z.enum(["static", "sticky", "fixed"]).default("sticky"),
+  // Shape, independent of position: a rounded, inset "floating" bar.
+  floating: z.boolean().default(false),
   animation: z
     .enum(["none", "fade", "slide-down", "blur", "scale"])
     .default("slide-down"),
   showLogo: z.boolean().default(true),
+  logoType: z.enum(["text", "image"]).default("text"),
   logoText: z.string().default("Portfolio"),
+  logoImage: z.string().default(""),
+  logoHeight: z.number().min(16).max(80).default(32),
   showNavigation: z.boolean().default(true),
   showThemeSwitcher: z.boolean().default(true),
   showResumeButton: z.boolean().default(true),
   showSocialIcons: z.boolean().default(true),
+  // Appearance:
+  //  blur — translucent glass (backdrop blur); solid — flat colour;
+  //  gradient — linear gradient; transparent — no background.
+  background: z.enum(["blur", "solid", "gradient", "transparent"]).default("blur"),
+  backgroundColor: hexColor.default("#101622"),
+  gradientFrom: hexColor.default("#2563eb"),
+  gradientTo: hexColor.default("#8b5cf6"),
+  gradientAngle: z.number().min(0).max(360).default(135),
+  // Active / hover style for the nav links.
+  navStyle: z.enum(["text", "underline", "pill"]).default("text"),
+  height: z.number().min(44).max(112).default(64),
+  showBorder: z.boolean().default(false),
 });
 export type HeaderConfig = z.infer<typeof headerSchema>;
 

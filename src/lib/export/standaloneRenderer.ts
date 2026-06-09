@@ -8,12 +8,12 @@
  */
 export const PORTFOLIO_TSX = `"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
-  AppBar, Avatar, Box, Button, Card, CardContent, Chip, Container,
-  IconButton, LinearProgress, Stack, Toolbar, Typography,
+  AppBar, Avatar, Box, Button, Card, CardContent, Chip, Container, Drawer,
+  IconButton, LinearProgress, List, ListItemButton, ListItemText, Stack, Toolbar, Typography,
 } from "@mui/material";
 import data from "../content/portfolio.json";
 
@@ -77,34 +77,117 @@ function Section({ id, heading, alt, children }: AnyObj) {
   );
 }
 
+function useHideOnScroll() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    let lastY = window.scrollY, ticking = false;
+    const update = () => {
+      const y = window.scrollY;
+      const goingDown = y > lastY && y > 80;
+      setHidden((prev) => (goingDown ? true : y < lastY ? false : prev));
+      lastY = y; ticking = false;
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return hidden;
+}
+
 function Header({ mode, toggle }: { mode: "light" | "dark"; toggle: () => void }) {
   const h = d.header, s = d.sections;
   const nav = (s.order as string[]).filter((k) => s.visibility[k]);
+  const scrolledHidden = useHideOnScroll();
+  const [open, setOpen] = useState(false);
+  const pinned = h.position !== "static";
+  const hidden = h.position === "sticky" && scrolledHidden;
+  const isImageLogo = h.logoType === "image" && !!h.logoImage;
+  const centered = h.variant === "centered", sidebarMode = h.variant === "sidebar";
+  const minimalMode = h.variant === "minimal", navCenter = h.variant === "modern", navRight = h.variant === "classic";
+  const drawerAnchor = sidebarMode ? "left" : "right";
+  const floatingSx = h.floating
+    ? { mx: "auto", mt: 1.5, width: "calc(100% - 24px)", maxWidth: d.theme.containerWidth - 24, borderRadius: 3, boxShadow: 6, overflow: "hidden" }
+    : {};
+  const navItemSx: AnyObj =
+    h.navStyle === "pill"
+      ? { fontWeight: 600, borderRadius: 999, px: 1.75, "&:hover": { bgcolor: "action.hover" } }
+      : h.navStyle === "underline"
+      ? { fontWeight: 600, borderRadius: 0, position: "relative",
+          "&::after": { content: '""', position: "absolute", left: 8, right: 8, bottom: 6, height: 2, bgcolor: "primary.main", transform: "scaleX(0)", transformOrigin: "left", transition: "transform .2s ease" },
+          "&:hover::after": { transform: "scaleX(1)" } }
+      : { fontWeight: 600, "&:hover": { color: "primary.main" } };
+  const label = (k: string) => (k === "hero" ? "Home" : SECTION_LABELS[k]);
+  const logo = !h.showLogo ? <span /> : isImageLogo ? (
+    <Box component="a" href="#hero" sx={{ display: "inline-flex", alignItems: "center" }}>
+      <Box component="img" src={h.logoImage} alt={h.logoText || "Logo"} sx={{ height: h.logoHeight, width: "auto", display: "block" }} />
+    </Box>
+  ) : (
+    <Typography component="a" href="#hero" variant="h6"
+      sx={{ fontWeight: 800, background: (t) => \`linear-gradient(90deg, \${t.palette.primary.main}, \${t.palette.secondary.main})\`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+      {h.logoText}
+    </Typography>
+  );
+  const navLinks = h.showNavigation ? (
+    <Stack direction="row" spacing={0.5} sx={{ display: { xs: "none", md: "flex" } }}>
+      {nav.map((k) => (<Button key={k} href={\`#\${k}\`} color="inherit" sx={navItemSx}>{label(k)}</Button>))}
+    </Stack>
+  ) : null;
+  const actions = (
+    <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
+      {h.showThemeSwitcher && d.theme.themeSwitcher && (
+        <IconButton onClick={toggle} color="inherit" aria-label="Toggle color mode">{mode === "dark" ? "☀" : "☾"}</IconButton>
+      )}
+      {h.showResumeButton && (
+        <Button variant="contained" size="small" href={d.sections.hero.resumeUrl || "#contact"} sx={{ ml: 0.5 }}>Resume</Button>
+      )}
+    </Stack>
+  );
+  const menuButton = h.showNavigation ? (
+    <IconButton onClick={() => setOpen(true)} color="inherit" aria-label="Open menu"
+      sx={{ display: sidebarMode || minimalMode ? "inline-flex" : { md: "none" } }}>☰</IconButton>
+  ) : null;
   return (
-    <AppBar position={h.position === "static" ? "static" : "sticky"} color="default" elevation={2}
-      sx={{ top: 0, backdropFilter: "blur(10px)", backgroundColor: (t) => t.palette.mode === "dark" ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.7)" }}>
-      <Container maxWidth={false} sx={{ maxWidth: d.theme.containerWidth }}>
-        <Toolbar disableGutters sx={{ gap: 1 }}>
-          {h.showLogo && (
-            <Typography component="a" href="#hero" variant="h6"
-              sx={{ fontWeight: 800, background: (t) => \`linear-gradient(90deg, \${t.palette.primary.main}, \${t.palette.secondary.main})\`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              {h.logoText}
-            </Typography>
+    <>
+      <AppBar position={pinned ? "sticky" : "static"} color="default"
+        elevation={h.background === "transparent" ? 0 : pinned ? 2 : 0}
+        sx={{ top: 0, transform: hidden ? "translateY(-130%)" : "none",
+          transition: "transform .35s ease",
+          backdropFilter: h.background === "blur" ? "blur(10px)" : "none",
+          backgroundColor: (t) => h.background === "transparent" ? "transparent"
+            : h.background === "solid" ? h.backgroundColor
+            : h.background === "gradient" ? "transparent"
+            : t.palette.mode === "dark" ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.7)",
+          backgroundImage: h.background === "gradient" ? \`linear-gradient(\${h.gradientAngle}deg, \${h.gradientFrom}, \${h.gradientTo})\` : "none",
+          borderBottom: h.showBorder && !h.floating ? 1 : 0, borderColor: "divider",
+          ...floatingSx }}>
+        <Container maxWidth={false} sx={{ maxWidth: d.theme.containerWidth }}>
+          {centered ? (
+            <Stack spacing={0.5} sx={{ alignItems: "center", justifyContent: "center", py: 1, minHeight: h.height }}>
+              {logo}
+              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>{navLinks}{actions}{menuButton}</Stack>
+            </Stack>
+          ) : (
+            <Toolbar disableGutters sx={{ gap: 1, minHeight: h.height }}>
+              {sidebarMode && menuButton}
+              {logo}
+              {navCenter ? (<Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>{navLinks}</Box>) : (<Box sx={{ flex: 1 }} />)}
+              {navRight && navLinks}
+              {actions}
+              {!sidebarMode && menuButton}
+            </Toolbar>
           )}
-          <Box sx={{ flex: 1, display: "flex", justifyContent: "center", gap: 0.5 }}>
-            {h.showNavigation && nav.map((k) => (
-              <Button key={k} href={\`#\${k}\`} color="inherit" sx={{ fontWeight: 600, display: { xs: "none", md: "inline-flex" } }}>{SECTION_LABELS[k]}</Button>
+        </Container>
+      </AppBar>
+      <Drawer anchor={drawerAnchor} open={open} onClose={() => setOpen(false)}>
+        <Box sx={{ width: 260 }} role="presentation" onClick={() => setOpen(false)}>
+          <List>
+            {nav.map((k) => (
+              <ListItemButton key={k} component="a" href={\`#\${k}\`}><ListItemText primary={label(k)} /></ListItemButton>
             ))}
-          </Box>
-          {h.showThemeSwitcher && d.theme.themeSwitcher && (
-            <IconButton onClick={toggle} color="inherit" aria-label="Toggle color mode">{mode === "dark" ? "☀" : "☾"}</IconButton>
-          )}
-          {h.showResumeButton && (
-            <Button variant="contained" size="small" href={d.sections.hero.resumeUrl || "#contact"}>Resume</Button>
-          )}
-        </Toolbar>
-      </Container>
-    </AppBar>
+          </List>
+        </Box>
+      </Drawer>
+    </>
   );
 }
 

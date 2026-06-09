@@ -6,11 +6,16 @@ import type { SocialLink } from "@/schemas/portfolio";
 import { EditorCard, SelectInput, TextInput } from "./fields";
 import { ItemList, newId } from "./ItemList";
 
-export default function SocialsEditor() {
+export default function SocialsEditor({ collapsible = false }: { collapsible?: boolean }) {
   const { socials, setSocials } = useSocialsStore();
 
   return (
-    <EditorCard title="Social Links" description="Shared across the header, footer, and hero.">
+    <EditorCard
+      title="Social Links"
+      description="Shared across the header, footer, and hero."
+      collapsible={collapsible}
+      defaultExpanded={false}
+    >
       <ItemList
         items={socials}
         onChange={setSocials}

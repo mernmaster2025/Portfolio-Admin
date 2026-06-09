@@ -6,7 +6,9 @@ import {
   Card,
   CardContent,
   Chip,
+  Collapse,
   FormControlLabel,
+  IconButton,
   MenuItem,
   Slider,
   Stack,
@@ -14,31 +16,58 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-/** A titled group of related controls. */
+/** A titled group of related controls. Optionally collapsible. */
 export function EditorCard({
   title,
   description,
+  collapsible = false,
+  defaultExpanded = true,
   children,
 }: {
   title: string;
   description?: string;
+  collapsible?: boolean;
+  defaultExpanded?: boolean;
   children: React.ReactNode;
 }) {
+  const [open, setOpen] = useState(defaultExpanded);
+  const expanded = collapsible ? open : true;
+
   return (
     <Card variant="outlined" sx={{ mb: 2.5 }}>
       <CardContent>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-          {title}
-        </Typography>
-        {description && (
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {description}
+        <Stack
+          direction="row"
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: collapsible ? "pointer" : "default",
+          }}
+          onClick={collapsible ? () => setOpen((o) => !o) : undefined}
+        >
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            {title}
           </Typography>
-        )}
-        <Stack spacing={2} sx={{ mt: description ? 0 : 2 }}>
-          {children}
+          {collapsible && (
+            <IconButton size="small" aria-label={expanded ? "Collapse" : "Expand"}>
+              <ExpandMoreIcon
+                sx={{ transform: expanded ? "rotate(180deg)" : "none", transition: "transform .2s ease" }}
+              />
+            </IconButton>
+          )}
         </Stack>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          {description && (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {description}
+            </Typography>
+          )}
+          <Stack spacing={2} sx={{ mt: 2 }}>
+            {children}
+          </Stack>
+        </Collapse>
       </CardContent>
     </Card>
   );
