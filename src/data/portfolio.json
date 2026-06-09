@@ -1,0 +1,298 @@
+{
+  "theme": {
+    "mode": "dark",
+    "themeSwitcher": true,
+    "preset": "developer",
+    "primaryColor": "#2563eb",
+    "secondaryColor": "#8b5cf6",
+    "backgroundColor": "#0b0f17",
+    "surfaceColor": "#121826",
+    "textColor": "#e6edf3",
+    "fontFamily": "Inter",
+    "borderRadius": 16,
+    "containerWidth": 1200
+  },
+  "header": {
+    "variant": "modern",
+    "position": "sticky",
+    "animation": "slide-down",
+    "showLogo": true,
+    "logoText": "Portfolio",
+    "showNavigation": true,
+    "showThemeSwitcher": true,
+    "showResumeButton": true,
+    "showSocialIcons": true
+  },
+  "footer": {
+    "variant": "corporate",
+    "columns": 4,
+    "copyrightText": "All rights reserved.",
+    "showCopyright": true,
+    "showSocialLinks": true,
+    "showQuickLinks": true,
+    "showContactInfo": true
+  },
+  "sections": {
+    "order": [
+      "hero",
+      "about",
+      "skills",
+      "experience",
+      "projects",
+      "testimonials",
+      "contact"
+    ],
+    "visibility": {
+      "hero": true,
+      "about": true,
+      "skills": true,
+      "experience": true,
+      "projects": true,
+      "testimonials": true,
+      "contact": true
+    },
+    "hero": {
+      "variant": "split",
+      "showPhoto": true,
+      "showTypingEffect": true,
+      "showResumeButton": true,
+      "showSocialLinks": true,
+      "name": "Jordan Rivera",
+      "title": "Full-Stack Developer",
+      "roles": [
+        "Full-Stack Developer",
+        "UI Engineer",
+        "Open Sourcerer"
+      ],
+      "description": "I design and build performant, accessible web experiences end to end.",
+      "profileImage": "",
+      "resumeUrl": "",
+      "primaryCtaLabel": "View Projects",
+      "primaryCtaHref": "#projects",
+      "secondaryCtaLabel": "Contact Me",
+      "secondaryCtaHref": "#contact"
+    },
+    "about": {
+      "variant": "modern",
+      "showStats": true,
+      "showSkills": true,
+      "heading": "About Me",
+      "description": "I'm a developer with a passion for clean architecture and delightful interfaces. Over the years I've shipped products across fintech, health, and developer tooling.",
+      "highlights": [
+        "Clean code advocate",
+        "Design systems",
+        "Mentorship"
+      ],
+      "stats": [
+        {
+          "id": "s1",
+          "label": "Years Experience",
+          "value": "8+"
+        },
+        {
+          "id": "s2",
+          "label": "Projects Shipped",
+          "value": "120+"
+        },
+        {
+          "id": "s3",
+          "label": "Happy Clients",
+          "value": "45"
+        }
+      ]
+    },
+    "skills": {
+      "variant": "progress",
+      "heading": "Skills",
+      "items": [
+        {
+          "id": "k1",
+          "name": "TypeScript",
+          "category": "Languages",
+          "percentage": 92,
+          "icon": ""
+        },
+        {
+          "id": "k2",
+          "name": "React / Next.js",
+          "category": "Frontend",
+          "percentage": 95,
+          "icon": ""
+        },
+        {
+          "id": "k3",
+          "name": "Node.js",
+          "category": "Backend",
+          "percentage": 88,
+          "icon": ""
+        },
+        {
+          "id": "k4",
+          "name": "PostgreSQL",
+          "category": "Data",
+          "percentage": 80,
+          "icon": ""
+        }
+      ]
+    },
+    "experience": {
+      "variant": "timeline",
+      "heading": "Experience",
+      "items": [
+        {
+          "id": "e1",
+          "company": "Acme Corp",
+          "position": "Senior Software Engineer",
+          "location": "Remote",
+          "startDate": "2021",
+          "endDate": "",
+          "current": true,
+          "description": "Lead frontend for the core product, mentoring a team of five.",
+          "technologies": [
+            "React",
+            "Next.js",
+            "GraphQL"
+          ]
+        },
+        {
+          "id": "e2",
+          "company": "Startup Labs",
+          "position": "Software Engineer",
+          "location": "Berlin",
+          "startDate": "2018",
+          "endDate": "2021",
+          "current": false,
+          "description": "Built the design system and internal tooling from scratch.",
+          "technologies": [
+            "TypeScript",
+            "Node.js"
+          ]
+        }
+      ]
+    },
+    "projects": {
+      "variant": "grid",
+      "heading": "Projects",
+      "columns": 3,
+      "showFilters": true,
+      "showGithub": true,
+      "showDemo": true,
+      "items": [
+        {
+          "id": "p1",
+          "title": "DevBoard",
+          "description": "A real-time kanban board for engineering teams.",
+          "image": "",
+          "technologies": [
+            "Next.js",
+            "tRPC",
+            "Postgres"
+          ],
+          "category": "Web",
+          "githubUrl": "",
+          "liveUrl": "",
+          "featured": true
+        },
+        {
+          "id": "p2",
+          "title": "PixelPay",
+          "description": "Lightweight payments SDK with delightful DX.",
+          "image": "",
+          "technologies": [
+            "TypeScript",
+            "Stripe"
+          ],
+          "category": "SDK",
+          "githubUrl": "",
+          "liveUrl": "",
+          "featured": false
+        },
+        {
+          "id": "p3",
+          "title": "Lumen UI",
+          "description": "An accessible, themeable component library.",
+          "image": "",
+          "technologies": [
+            "React",
+            "Emotion"
+          ],
+          "category": "Library",
+          "githubUrl": "",
+          "liveUrl": "",
+          "featured": false
+        }
+      ]
+    },
+    "testimonials": {
+      "variant": "cards",
+      "heading": "Testimonials",
+      "items": [
+        {
+          "id": "t1",
+          "name": "Sam Carter",
+          "company": "Acme Corp",
+          "position": "CTO",
+          "avatar": "",
+          "quote": "One of the most reliable engineers I've worked with. Ships fast, ships clean."
+        },
+        {
+          "id": "t2",
+          "name": "Priya Nair",
+          "company": "Startup Labs",
+          "position": "Product Lead",
+          "avatar": "",
+          "quote": "Turned our vague ideas into a polished product the users love."
+        }
+      ]
+    },
+    "contact": {
+      "variant": "split",
+      "heading": "Get In Touch",
+      "description": "Have a project in mind? Let's talk.",
+      "email": "hello@example.com",
+      "phone": "",
+      "address": "",
+      "showContactForm": true,
+      "showMap": false
+    }
+  },
+  "animations": {
+    "preset": "smooth",
+    "pageTransitions": true,
+    "scrollReveal": true,
+    "sectionAnimation": true,
+    "heroAnimation": true,
+    "cursorEffects": false,
+    "particleEffects": false
+  },
+  "seo": {
+    "metaTitle": "Jordan Rivera — Full-Stack Developer",
+    "metaDescription": "Portfolio of Jordan Rivera, a full-stack developer building delightful web apps.",
+    "keywords": [
+      "developer",
+      "portfolio",
+      "react",
+      "next.js"
+    ],
+    "ogImage": "",
+    "twitterImage": "",
+    "canonicalUrl": ""
+  },
+  "socials": [
+    {
+      "id": "sl1",
+      "platform": "github",
+      "url": "https://github.com"
+    },
+    {
+      "id": "sl2",
+      "platform": "linkedin",
+      "url": "https://linkedin.com"
+    },
+    {
+      "id": "sl3",
+      "platform": "twitter",
+      "url": "https://twitter.com"
+    }
+  ]
+}
