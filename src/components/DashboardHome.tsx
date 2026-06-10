@@ -34,7 +34,8 @@ export default function DashboardHome() {
   ];
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1100, mx: "auto", width: "100%" }}>
+    <Box sx={{ height: "100%", overflowY: "auto", p: { xs: 2, md: 4 } }}>
+    <Box sx={{ maxWidth: 1100, mx: "auto", width: "100%" }}>
       <Card
         sx={{
           mb: 3,
@@ -104,6 +105,7 @@ export default function DashboardHome() {
           );
         })}
       </Box>
+    </Box>
     </Box>
   );
 }

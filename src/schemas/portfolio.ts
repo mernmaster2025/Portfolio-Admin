@@ -109,6 +109,10 @@ export const headerSchema = z.object({
   navStyle: z.enum(["text", "underline", "pill"]).default("text"),
   height: z.number().min(44).max(112).default(64),
   showBorder: z.boolean().default(false),
+  // Horizontal margin insets the bar from the viewport edges (great for the
+  // floating shape); horizontal padding is the inner gutter of the content.
+  marginX: z.number().min(0).max(80).default(0),
+  paddingX: z.number().min(0).max(80).default(24),
 });
 export type HeaderConfig = z.infer<typeof headerSchema>;
 

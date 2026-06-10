@@ -187,6 +187,22 @@ export default function HeaderEditor() {
           unit="px"
           onChange={(height) => updateHeader({ height })}
         />
+        <SliderInput
+          label="Horizontal margin"
+          value={header.marginX}
+          min={0}
+          max={80}
+          unit="px"
+          onChange={(marginX) => updateHeader({ marginX })}
+        />
+        <SliderInput
+          label="Horizontal padding"
+          value={header.paddingX}
+          min={0}
+          max={80}
+          unit="px"
+          onChange={(paddingX) => updateHeader({ paddingX })}
+        />
         <SwitchInput
           label="Bottom border"
           checked={header.showBorder}

@@ -73,6 +73,20 @@ export const HEADER_APPEARANCE_PRESETS: HeaderAppearancePreset[] = [
     },
   },
   {
+    id: "primary",
+    label: "Primary",
+    fields: {
+      background: "solid",
+      backgroundColor: "#4f46e5",
+      gradientFrom: "#2563eb",
+      gradientTo: "#8b5cf6",
+      gradientAngle: 135,
+      navStyle: "text",
+      height: 64,
+      showBorder: false,
+    },
+  },
+  {
     id: "solid-pill",
     label: "Solid",
     fields: {
@@ -87,8 +101,8 @@ export const HEADER_APPEARANCE_PRESETS: HeaderAppearancePreset[] = [
     },
   },
   {
-    id: "minimal-line",
-    label: "Minimal Line",
+    id: "outlined",
+    label: "Outlined",
     fields: {
       background: "transparent",
       backgroundColor: "#101622",
@@ -98,6 +112,20 @@ export const HEADER_APPEARANCE_PRESETS: HeaderAppearancePreset[] = [
       navStyle: "underline",
       height: 60,
       showBorder: true,
+    },
+  },
+  {
+    id: "sunset",
+    label: "Sunset",
+    fields: {
+      background: "gradient",
+      backgroundColor: "#101622",
+      gradientFrom: "#f97316",
+      gradientTo: "#db2777",
+      gradientAngle: 120,
+      navStyle: "text",
+      height: 68,
+      showBorder: false,
     },
   },
   {

@@ -119,18 +119,24 @@ export function PortfolioHeader({
         }
       : { fontWeight: 600, "&:hover": { color: "primary.main" } };
 
-  // Floating shape: a rounded, inset bar — independent of position.
+  // Floating shape: a detached bar capped to the page content width, centered,
+  // with the horizontal margin reducing that width (and adding the side gap).
+  // Non-floating: a full-width bar that the margin simply insets from the edges.
   const floatingSx = header.floating
     ? {
-        mx: "auto",
         mt: 1.5,
-        width: "calc(100% - 24px)",
-        maxWidth: theme.containerWidth - 24,
+        mx: "auto",
+        width: `calc(100% - ${header.marginX * 2}px)`,
+        maxWidth: theme.containerWidth - header.marginX * 2,
         borderRadius: 3,
         boxShadow: 6,
         overflow: "hidden",
       }
     : {};
+  const insetSx =
+    !header.floating && header.marginX > 0
+      ? { width: `calc(100% - ${header.marginX * 2}px)`, mx: "auto" }
+      : {};
 
   const Logo = !header.showLogo ? (
     <span />
@@ -239,14 +245,20 @@ export function PortfolioHeader({
           borderBottom: header.showBorder && !header.floating ? 1 : 0,
           borderColor: "divider",
           ...ENTRANCE[header.animation],
+          ...insetSx,
           ...floatingSx,
         }}
       >
-        <Container maxWidth={false} sx={{ maxWidth: theme.containerWidth }}>
+        <Container maxWidth={false} sx={{ maxWidth: theme.containerWidth, px: `${header.paddingX}px` }}>
           {centered ? (
             <Stack
               spacing={0.5}
-              sx={{ alignItems: "center", justifyContent: "center", py: 1, minHeight: header.height }}
+              sx={{
+                alignItems: "center",
+                justifyContent: "center",
+                py: 1,
+                minHeight: { xs: header.height, sm: header.height },
+              }}
             >
               {Logo}
               <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
@@ -256,7 +268,7 @@ export function PortfolioHeader({
               </Stack>
             </Stack>
           ) : (
-            <Toolbar disableGutters sx={{ gap: 1, minHeight: header.height }}>
+            <Toolbar disableGutters sx={{ gap: 1, minHeight: { xs: header.height, sm: header.height } }}>
               {sidebarMode && MenuButton}
               {Logo}
               {navCenter ? (

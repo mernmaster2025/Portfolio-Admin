@@ -106,8 +106,9 @@ function Header({ mode, toggle }: { mode: "light" | "dark"; toggle: () => void }
   const minimalMode = h.variant === "minimal", navCenter = h.variant === "modern", navRight = h.variant === "classic";
   const drawerAnchor = sidebarMode ? "left" : "right";
   const floatingSx = h.floating
-    ? { mx: "auto", mt: 1.5, width: "calc(100% - 24px)", maxWidth: d.theme.containerWidth - 24, borderRadius: 3, boxShadow: 6, overflow: "hidden" }
+    ? { mt: 1.5, mx: "auto", width: \`calc(100% - \${h.marginX * 2}px)\`, maxWidth: d.theme.containerWidth - h.marginX * 2, borderRadius: 3, boxShadow: 6, overflow: "hidden" }
     : {};
+  const insetSx = !h.floating && h.marginX > 0 ? { width: \`calc(100% - \${h.marginX * 2}px)\`, mx: "auto" } : {};
   const navItemSx: AnyObj =
     h.navStyle === "pill"
       ? { fontWeight: 600, borderRadius: 999, px: 1.75, "&:hover": { bgcolor: "action.hover" } }
@@ -159,15 +160,15 @@ function Header({ mode, toggle }: { mode: "light" | "dark"; toggle: () => void }
             : t.palette.mode === "dark" ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.7)",
           backgroundImage: h.background === "gradient" ? \`linear-gradient(\${h.gradientAngle}deg, \${h.gradientFrom}, \${h.gradientTo})\` : "none",
           borderBottom: h.showBorder && !h.floating ? 1 : 0, borderColor: "divider",
-          ...floatingSx }}>
-        <Container maxWidth={false} sx={{ maxWidth: d.theme.containerWidth }}>
+          ...insetSx, ...floatingSx }}>
+        <Container maxWidth={false} sx={{ maxWidth: d.theme.containerWidth, px: \`\${h.paddingX}px\` }}>
           {centered ? (
-            <Stack spacing={0.5} sx={{ alignItems: "center", justifyContent: "center", py: 1, minHeight: h.height }}>
+            <Stack spacing={0.5} sx={{ alignItems: "center", justifyContent: "center", py: 1, minHeight: { xs: h.height, sm: h.height } }}>
               {logo}
               <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>{navLinks}{actions}{menuButton}</Stack>
             </Stack>
           ) : (
-            <Toolbar disableGutters sx={{ gap: 1, minHeight: h.height }}>
+            <Toolbar disableGutters sx={{ gap: 1, minHeight: { xs: h.height, sm: h.height } }}>
               {sidebarMode && menuButton}
               {logo}
               {navCenter ? (<Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>{navLinks}</Box>) : (<Box sx={{ flex: 1 }} />)}

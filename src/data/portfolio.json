@@ -33,7 +33,9 @@
     "gradientAngle": 135,
     "navStyle": "text",
     "height": 64,
-    "showBorder": false
+    "showBorder": false,
+    "marginX": 0,
+    "paddingX": 24
   },
   "footer": {
     "variant": "corporate",
