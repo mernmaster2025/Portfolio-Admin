@@ -31,11 +31,9 @@
     "gradientFrom": "#2563eb",
     "gradientTo": "#8b5cf6",
     "gradientAngle": 135,
-    "navStyle": "text",
+    "navStyle": "underline",
     "height": 64,
-    "showBorder": false,
-    "marginX": 0,
-    "paddingX": 24
+    "marginX": 0
   },
   "footer": {
     "variant": "corporate",
@@ -44,7 +42,8 @@
     "showCopyright": true,
     "showSocialLinks": true,
     "showQuickLinks": true,
-    "showContactInfo": true
+    "showContactInfo": true,
+    "shadow": 0
   },
   "sections": {
     "order": [

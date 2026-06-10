@@ -15,6 +15,7 @@ import {
   HEADER_APPEARANCE_PRESETS,
   matchesHeaderPreset,
   presetSwatchSx,
+  presetSwatchFg,
 } from "@/lib/headerPresets";
 
 export default function HeaderEditor() {
@@ -66,9 +67,6 @@ export default function HeaderEditor() {
 
       <EditorCard title="Appearance" collapsible defaultExpanded={false}>
         <Box>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-            Quick styles — pick a look, then customize below.
-          </Typography>
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
             {HEADER_APPEARANCE_PRESETS.map((preset) => {
               const active = matchesHeaderPreset(header, preset);
@@ -106,20 +104,16 @@ export default function HeaderEditor() {
                       ...presetSwatchSx(preset.fields),
                     }}
                   >
-                    <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "rgba(255,255,255,0.85)" }} />
+                    <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: presetSwatchFg(preset.fields) }} />
                     <Box sx={{ flex: 1 }} />
                     {[0, 1, 2].map((i) => (
                       <Box
                         key={i}
-                        sx={{
-                          width: 12,
-                          height: 4,
-                          borderRadius: 2,
-                          bgcolor: "rgba(255,255,255,0.7)",
-                          ...(preset.fields.navStyle === "pill"
-                            ? { bgcolor: "rgba(255,255,255,0.22)", width: 14, height: 8, borderRadius: 4 }
-                            : {}),
-                        }}
+                        sx={
+                          preset.fields.navStyle === "pill"
+                            ? { width: 14, height: 8, borderRadius: 4, bgcolor: presetSwatchFg(preset.fields), opacity: 0.3 }
+                            : { width: 12, height: 4, borderRadius: 2, bgcolor: presetSwatchFg(preset.fields), opacity: 0.8 }
+                        }
                       />
                     ))}
                   </Box>
@@ -139,42 +133,25 @@ export default function HeaderEditor() {
 
         <SelectInput
           label="Background"
-          value={header.background}
+          value={header.background === "gradient" ? "solid" : header.background}
           onChange={(background) => updateHeader({ background })}
           options={[
             { value: "blur", label: "Glass (blur)" },
             { value: "solid", label: "Solid color" },
-            { value: "gradient", label: "Gradient" },
-            { value: "transparent", label: "Transparent" },
           ]}
         />
-        {header.background === "solid" && (
+        {header.background !== "blur" && (
           <ColorInput
             label="Background color"
             value={header.backgroundColor}
             onChange={(backgroundColor) => updateHeader({ backgroundColor })}
           />
         )}
-        {header.background === "gradient" && (
-          <>
-            <ColorInput label="Gradient from" value={header.gradientFrom} onChange={(gradientFrom) => updateHeader({ gradientFrom })} />
-            <ColorInput label="Gradient to" value={header.gradientTo} onChange={(gradientTo) => updateHeader({ gradientTo })} />
-            <SliderInput
-              label="Gradient angle"
-              value={header.gradientAngle}
-              min={0}
-              max={360}
-              unit="°"
-              onChange={(gradientAngle) => updateHeader({ gradientAngle })}
-            />
-          </>
-        )}
         <SelectInput
-          label="Nav item style (hover / active)"
+          label="Nav item style"
           value={header.navStyle}
           onChange={(navStyle) => updateHeader({ navStyle })}
           options={[
-            { value: "text", label: "Text" },
             { value: "underline", label: "Underline" },
             { value: "pill", label: "Pill" },
           ]}
@@ -194,19 +171,6 @@ export default function HeaderEditor() {
           max={80}
           unit="px"
           onChange={(marginX) => updateHeader({ marginX })}
-        />
-        <SliderInput
-          label="Horizontal padding"
-          value={header.paddingX}
-          min={0}
-          max={80}
-          unit="px"
-          onChange={(paddingX) => updateHeader({ paddingX })}
-        />
-        <SwitchInput
-          label="Bottom border"
-          checked={header.showBorder}
-          onChange={(showBorder) => updateHeader({ showBorder })}
         />
       </EditorCard>
 

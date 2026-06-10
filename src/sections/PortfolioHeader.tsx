@@ -56,6 +56,17 @@ const ENTRANCE: Record<HeaderConfig["animation"], object> = {
   },
 };
 
+/** Pick a readable text color (black/white) for a solid header background. */
+function readableOn(hex: string): string {
+  const h = hex.replace("#", "");
+  const f = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const r = parseInt(f.slice(0, 2), 16) / 255;
+  const g = parseInt(f.slice(2, 4), 16) / 255;
+  const b = parseInt(f.slice(4, 6), 16) / 255;
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return lum > 0.55 ? "#0b0f17" : "#ffffff";
+}
+
 export function PortfolioHeader({
   colorMode,
   onToggleColorMode,
@@ -94,12 +105,23 @@ export function PortfolioHeader({
   const drawerAnchor = sidebarMode ? "left" : "right";
   const isImageLogo = header.logoType === "image" && !!header.logoImage;
 
+  // Readable text for solid bars; theme text for glass. Nav accents derive from
+  // it so hover/active styles look right on any background and in either theme.
+  const barText =
+    header.background === "solid"
+      ? readableOn(header.backgroundColor)
+      : header.background === "gradient"
+      ? readableOn(header.gradientFrom)
+      : "text.primary";
+  const onSolid = barText !== "text.primary";
+  const navAccent = onSolid ? barText : "primary.main";
+  const navHover = onSolid ? `${barText}22` : "action.hover";
+
   // Hover / active style for nav links.
   const navItemSx: SxProps<Theme> =
     header.navStyle === "pill"
-      ? { fontWeight: 600, borderRadius: 999, px: 1.75, "&:hover": { bgcolor: "action.hover" } }
-      : header.navStyle === "underline"
-      ? {
+      ? { fontWeight: 600, borderRadius: 999, px: 1.75, "&:hover": { bgcolor: navHover } }
+      : {
           fontWeight: 600,
           borderRadius: 0,
           position: "relative",
@@ -110,21 +132,24 @@ export function PortfolioHeader({
             right: 8,
             bottom: 6,
             height: 2,
-            bgcolor: "primary.main",
+            bgcolor: navAccent,
             transform: "scaleX(0)",
             transformOrigin: "left",
             transition: "transform .2s ease",
           },
           "&:hover::after": { transform: "scaleX(1)" },
-        }
-      : { fontWeight: 600, "&:hover": { color: "primary.main" } };
+        };
 
   // Floating shape: a detached bar capped to the page content width, centered,
   // with the horizontal margin reducing that width (and adding the side gap).
   // Non-floating: a full-width bar that the margin simply insets from the edges.
+  // Floating: a consistent gap from the top both at rest (mt) and when stuck
+  // (top) — matching them keeps the float smooth as you scroll to the top.
+  const floatGap = 16;
   const floatingSx = header.floating
     ? {
-        mt: 1.5,
+        top: `${floatGap}px`,
+        mt: `${floatGap}px`,
         mx: "auto",
         width: `calc(100% - ${header.marginX * 2}px)`,
         maxWidth: theme.containerWidth - header.marginX * 2,
@@ -220,18 +245,17 @@ export function PortfolioHeader({
     <>
       <AppBar
         position={muiPosition}
-        color="default"
-        elevation={header.background === "transparent" ? 0 : pinned ? 2 : 0}
+        color="transparent"
+        elevation={pinned ? 2 : 0}
         sx={{
           top: 0,
+          color: barText,
           // Hide (sticky only) by sliding up; smooth transition.
           transform: hidden ? "translateY(-130%)" : "none",
           transition: "transform .35s ease",
           backdropFilter: header.background === "blur" ? "blur(10px)" : "none",
           backgroundColor: (t) =>
-            header.background === "transparent"
-              ? "transparent"
-              : header.background === "solid"
+            header.background === "solid"
               ? header.backgroundColor
               : header.background === "gradient"
               ? "transparent"
@@ -242,14 +266,12 @@ export function PortfolioHeader({
             header.background === "gradient"
               ? `linear-gradient(${header.gradientAngle}deg, ${header.gradientFrom}, ${header.gradientTo})`
               : "none",
-          borderBottom: header.showBorder && !header.floating ? 1 : 0,
-          borderColor: "divider",
           ...ENTRANCE[header.animation],
           ...insetSx,
           ...floatingSx,
         }}
       >
-        <Container maxWidth={false} sx={{ maxWidth: theme.containerWidth, px: `${header.paddingX}px` }}>
+        <Container maxWidth={false} sx={{ maxWidth: theme.containerWidth }}>
           {centered ? (
             <Stack
               spacing={0.5}

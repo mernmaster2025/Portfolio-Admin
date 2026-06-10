@@ -18,6 +18,12 @@ export function PortfolioFooter() {
   const navItems = sections.order.filter((k) => sections.visibility[k]);
   const label = (k: SectionKey) => (k === "hero" ? "Home" : SECTION_LABELS[k]);
 
+  // Upward "top shadow" above the footer, scaled by the shadow setting.
+  const footerShadow =
+    footer.shadow > 0
+      ? `0px -${footer.shadow}px ${footer.shadow * 2.5}px rgba(0,0,0,0.18)`
+      : "none";
+
   const Social = footer.showSocialLinks && socials.length > 0 && (
     <Stack direction="row" spacing={0.5}>
       {socials.map((s) => (
@@ -37,7 +43,7 @@ export function PortfolioFooter() {
   // Minimal / centered: single row
   if (footer.variant === "minimal" || footer.variant === "centered") {
     return (
-      <Box component="footer" sx={{ bgcolor: "background.paper", py: 4, borderTop: 1, borderColor: "divider" }}>
+      <Box component="footer" sx={{ bgcolor: "background.paper", py: 4, borderTop: 1, borderColor: "divider", boxShadow: footerShadow }}>
         <Container maxWidth={false} sx={{ maxWidth: theme.containerWidth }}>
           <Stack
             direction={footer.variant === "centered" ? "column" : { xs: "column", sm: "row" }}
@@ -55,7 +61,7 @@ export function PortfolioFooter() {
   // Developer / corporate / multi-column: column layout
   const cols = Math.min(Math.max(footer.columns, 1), 4);
   return (
-    <Box component="footer" sx={{ bgcolor: "background.paper", pt: 6, pb: 4, borderTop: 1, borderColor: "divider" }}>
+    <Box component="footer" sx={{ bgcolor: "background.paper", pt: 6, pb: 4, borderTop: 1, borderColor: "divider", boxShadow: footerShadow }}>
       <Container maxWidth={false} sx={{ maxWidth: theme.containerWidth }}>
         <Box
           sx={{

@@ -106,17 +106,20 @@ function Header({ mode, toggle }: { mode: "light" | "dark"; toggle: () => void }
   const minimalMode = h.variant === "minimal", navCenter = h.variant === "modern", navRight = h.variant === "classic";
   const drawerAnchor = sidebarMode ? "left" : "right";
   const floatingSx = h.floating
-    ? { mt: 1.5, mx: "auto", width: \`calc(100% - \${h.marginX * 2}px)\`, maxWidth: d.theme.containerWidth - h.marginX * 2, borderRadius: 3, boxShadow: 6, overflow: "hidden" }
+    ? { top: "16px", mt: "16px", mx: "auto", width: \`calc(100% - \${h.marginX * 2}px)\`, maxWidth: d.theme.containerWidth - h.marginX * 2, borderRadius: 3, boxShadow: 6, overflow: "hidden" }
     : {};
   const insetSx = !h.floating && h.marginX > 0 ? { width: \`calc(100% - \${h.marginX * 2}px)\`, mx: "auto" } : {};
+  const barText = h.background === "solid" ? (luminance(h.backgroundColor) > 0.55 ? "#0b0f17" : "#ffffff")
+    : h.background === "gradient" ? (luminance(h.gradientFrom) > 0.55 ? "#0b0f17" : "#ffffff") : "text.primary";
+  const onSolid = barText !== "text.primary";
+  const navAccent = onSolid ? barText : "primary.main";
+  const navHover = onSolid ? barText + "22" : "action.hover";
   const navItemSx: AnyObj =
     h.navStyle === "pill"
-      ? { fontWeight: 600, borderRadius: 999, px: 1.75, "&:hover": { bgcolor: "action.hover" } }
-      : h.navStyle === "underline"
-      ? { fontWeight: 600, borderRadius: 0, position: "relative",
-          "&::after": { content: '""', position: "absolute", left: 8, right: 8, bottom: 6, height: 2, bgcolor: "primary.main", transform: "scaleX(0)", transformOrigin: "left", transition: "transform .2s ease" },
-          "&:hover::after": { transform: "scaleX(1)" } }
-      : { fontWeight: 600, "&:hover": { color: "primary.main" } };
+      ? { fontWeight: 600, borderRadius: 999, px: 1.75, "&:hover": { bgcolor: navHover } }
+      : { fontWeight: 600, borderRadius: 0, position: "relative",
+          "&::after": { content: '""', position: "absolute", left: 8, right: 8, bottom: 6, height: 2, bgcolor: navAccent, transform: "scaleX(0)", transformOrigin: "left", transition: "transform .2s ease" },
+          "&:hover::after": { transform: "scaleX(1)" } };
   const label = (k: string) => (k === "hero" ? "Home" : SECTION_LABELS[k]);
   const logo = !h.showLogo ? <span /> : isImageLogo ? (
     <Box component="a" href="#hero" sx={{ display: "inline-flex", alignItems: "center" }}>
@@ -149,19 +152,17 @@ function Header({ mode, toggle }: { mode: "light" | "dark"; toggle: () => void }
   ) : null;
   return (
     <>
-      <AppBar position={pinned ? "sticky" : "static"} color="default"
-        elevation={h.background === "transparent" ? 0 : pinned ? 2 : 0}
-        sx={{ top: 0, transform: hidden ? "translateY(-130%)" : "none",
+      <AppBar position={pinned ? "sticky" : "static"} color="transparent"
+        elevation={pinned ? 2 : 0}
+        sx={{ top: 0, color: barText, transform: hidden ? "translateY(-130%)" : "none",
           transition: "transform .35s ease",
           backdropFilter: h.background === "blur" ? "blur(10px)" : "none",
-          backgroundColor: (t) => h.background === "transparent" ? "transparent"
-            : h.background === "solid" ? h.backgroundColor
+          backgroundColor: (t) => h.background === "solid" ? h.backgroundColor
             : h.background === "gradient" ? "transparent"
             : t.palette.mode === "dark" ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.7)",
           backgroundImage: h.background === "gradient" ? \`linear-gradient(\${h.gradientAngle}deg, \${h.gradientFrom}, \${h.gradientTo})\` : "none",
-          borderBottom: h.showBorder && !h.floating ? 1 : 0, borderColor: "divider",
           ...insetSx, ...floatingSx }}>
-        <Container maxWidth={false} sx={{ maxWidth: d.theme.containerWidth, px: \`\${h.paddingX}px\` }}>
+        <Container maxWidth={false} sx={{ maxWidth: d.theme.containerWidth }}>
           {centered ? (
             <Stack spacing={0.5} sx={{ alignItems: "center", justifyContent: "center", py: 1, minHeight: { xs: h.height, sm: h.height } }}>
               {logo}
@@ -368,8 +369,9 @@ function Contact() {
 function Footer() {
   const f = d.footer;
   const year = new Date().getFullYear();
+  const footerShadow = f.shadow > 0 ? \`0px -\${f.shadow}px \${f.shadow * 2.5}px rgba(0,0,0,0.18)\` : "none";
   return (
-    <Box component="footer" sx={{ bgcolor: "background.paper", py: 4, borderTop: 1, borderColor: "divider" }}>
+    <Box component="footer" sx={{ bgcolor: "background.paper", py: 4, borderTop: 1, borderColor: "divider", boxShadow: footerShadow }}>
       <Container maxWidth={false} sx={{ maxWidth: d.theme.containerWidth }}>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: "center", justifyContent: "space-between" }}>
           {f.showCopyright && <Typography variant="body2" color="text.secondary">© {year} {d.sections.hero.name}. {f.copyrightText}</Typography>}
@@ -380,16 +382,18 @@ function Footer() {
 }
 
 const COMPONENTS: AnyObj = { hero: Hero, about: About, skills: Skills, experience: Experience, projects: Projects, testimonials: Testimonials, contact: Contact };
+const SECTION_BG: AnyObj = { hero: "default", about: "paper", skills: "default", experience: "paper", projects: "default", testimonials: "default", contact: "paper" };
 
 export default function Portfolio() {
   const initial = d.theme.mode === "light" ? "light" : "dark";
   const [mode, setMode] = useState<"light" | "dark">(initial);
   const theme = useMemo(() => buildTheme(d.theme, mode), [mode]);
   const order = (d.sections.order as string[]).filter((k) => d.sections.visibility[k]);
+  const pageBg = order[0] && SECTION_BG[order[0]] === "paper" ? "background.paper" : "background.default";
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ bgcolor: "background.default", color: "text.primary", minHeight: "100vh" }}>
+      <Box sx={{ bgcolor: pageBg, color: "text.primary", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <Header mode={mode} toggle={() => setMode((m) => (m === "dark" ? "light" : "dark"))} />
         {order.map((k) => { const C = COMPONENTS[k]; return <C key={k} />; })}
         <Footer />

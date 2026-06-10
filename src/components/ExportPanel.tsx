@@ -73,7 +73,8 @@ export default function ExportPanel() {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 980, mx: "auto", width: "100%" }}>
+    <Box sx={{ height: "100%", overflowY: "auto", p: { xs: 2, md: 4 } }}>
+    <Box sx={{ maxWidth: 980, mx: "auto", width: "100%" }}>
       <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
         Export your portfolio
       </Typography>
@@ -145,6 +146,7 @@ export default function ExportPanel() {
           </CardContent>
         </Card>
       </Box>
+    </Box>
     </Box>
   );
 }

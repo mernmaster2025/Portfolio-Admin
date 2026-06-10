@@ -29,6 +29,14 @@ export default function FooterEditor() {
           max={4}
           onChange={(columns) => updateFooter({ columns })}
         />
+        <SliderInput
+          label="Top shadow"
+          value={footer.shadow}
+          min={0}
+          max={24}
+          unit="px"
+          onChange={(shadow) => updateFooter({ shadow })}
+        />
       </EditorCard>
 
       <EditorCard title="Content">

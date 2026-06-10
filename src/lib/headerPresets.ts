@@ -1,12 +1,6 @@
 import type { HeaderConfig } from "@/schemas/portfolio";
 
-/**
- * Appearance-only fields a quick-style preset can set.
- *
- * Note: this deliberately excludes structural settings that live in the Style
- * card — `variant`, `position`, `floating`, and `animation` — so picking a
- * quick style only changes the visual skin and never your chosen layout.
- */
+/** Appearance-only fields a quick-style preset can set (no structural settings). */
 export type HeaderAppearanceFields = Pick<
   HeaderConfig,
   | "background"
@@ -16,7 +10,6 @@ export type HeaderAppearanceFields = Pick<
   | "gradientAngle"
   | "navStyle"
   | "height"
-  | "showBorder"
 >;
 
 export interface HeaderAppearancePreset {
@@ -25,122 +18,55 @@ export interface HeaderAppearancePreset {
   fields: HeaderAppearanceFields;
 }
 
+// Gradient fields are kept at the schema defaults across presets (unused by any
+// look now) so they never affect preset matching.
+const GRAD = { gradientFrom: "#2563eb", gradientTo: "#8b5cf6", gradientAngle: 135 } as const;
+
 /**
- * Curated, good-looking header looks shown first in the Appearance section.
- * Selecting one applies the whole set; the manual controls below fine-tune it.
+ * Curated, good-looking header looks — inspired by modern product sites
+ * (glassy SaaS bars) and classic Material AppBars. Solid bars auto-pick
+ * readable text, so the light "Paper" look works in any theme.
  */
 export const HEADER_APPEARANCE_PRESETS: HeaderAppearancePreset[] = [
   {
-    id: "glass",
-    label: "Glass",
-    fields: {
-      background: "blur",
-      backgroundColor: "#101622",
-      gradientFrom: "#2563eb",
-      gradientTo: "#8b5cf6",
-      gradientAngle: 135,
-      navStyle: "text",
-      height: 64,
-      showBorder: false,
-    },
+    id: "aurora",
+    label: "Aurora",
+    fields: { background: "blur", backgroundColor: "#101622", ...GRAD, navStyle: "pill", height: 64 },
   },
   {
-    id: "glass-pill",
-    label: "Glass Pill",
-    fields: {
-      background: "blur",
-      backgroundColor: "#101622",
-      gradientFrom: "#2563eb",
-      gradientTo: "#8b5cf6",
-      gradientAngle: 135,
-      navStyle: "pill",
-      height: 64,
-      showBorder: false,
-    },
+    id: "frost",
+    label: "Frost",
+    fields: { background: "blur", backgroundColor: "#101622", ...GRAD, navStyle: "underline", height: 60 },
   },
   {
-    id: "gradient-flow",
-    label: "Gradient Flow",
-    fields: {
-      background: "gradient",
-      backgroundColor: "#101622",
-      gradientFrom: "#6366f1",
-      gradientTo: "#ec4899",
-      gradientAngle: 120,
-      navStyle: "underline",
-      height: 72,
-      showBorder: false,
-    },
+    id: "indigo",
+    label: "Indigo",
+    fields: { background: "solid", backgroundColor: "#4f46e5", ...GRAD, navStyle: "pill", height: 64 },
   },
   {
-    id: "primary",
-    label: "Primary",
-    fields: {
-      background: "solid",
-      backgroundColor: "#4f46e5",
-      gradientFrom: "#2563eb",
-      gradientTo: "#8b5cf6",
-      gradientAngle: 135,
-      navStyle: "text",
-      height: 64,
-      showBorder: false,
-    },
+    id: "royal",
+    label: "Royal",
+    fields: { background: "solid", backgroundColor: "#1976d2", ...GRAD, navStyle: "underline", height: 64 },
   },
   {
-    id: "solid-pill",
-    label: "Solid",
-    fields: {
-      background: "solid",
-      backgroundColor: "#0f172a",
-      gradientFrom: "#2563eb",
-      gradientTo: "#8b5cf6",
-      gradientAngle: 135,
-      navStyle: "pill",
-      height: 68,
-      showBorder: false,
-    },
+    id: "ocean",
+    label: "Ocean",
+    fields: { background: "solid", backgroundColor: "#0ea5e9", ...GRAD, navStyle: "pill", height: 64 },
   },
   {
-    id: "outlined",
-    label: "Outlined",
-    fields: {
-      background: "transparent",
-      backgroundColor: "#101622",
-      gradientFrom: "#2563eb",
-      gradientTo: "#8b5cf6",
-      gradientAngle: 135,
-      navStyle: "underline",
-      height: 60,
-      showBorder: true,
-    },
+    id: "onyx",
+    label: "Onyx",
+    fields: { background: "solid", backgroundColor: "#0b1120", ...GRAD, navStyle: "underline", height: 68 },
   },
   {
-    id: "sunset",
-    label: "Sunset",
-    fields: {
-      background: "gradient",
-      backgroundColor: "#101622",
-      gradientFrom: "#f97316",
-      gradientTo: "#db2777",
-      gradientAngle: 120,
-      navStyle: "text",
-      height: 68,
-      showBorder: false,
-    },
+    id: "slate",
+    label: "Slate",
+    fields: { background: "solid", backgroundColor: "#1e293b", ...GRAD, navStyle: "pill", height: 64 },
   },
   {
-    id: "bold",
-    label: "Bold",
-    fields: {
-      background: "solid",
-      backgroundColor: "#111827",
-      gradientFrom: "#2563eb",
-      gradientTo: "#8b5cf6",
-      gradientAngle: 135,
-      navStyle: "underline",
-      height: 84,
-      showBorder: false,
-    },
+    id: "paper",
+    label: "Paper",
+    fields: { background: "solid", backgroundColor: "#ffffff", ...GRAD, navStyle: "underline", height: 64 },
   },
 ];
 
@@ -153,10 +79,21 @@ export function matchesHeaderPreset(header: HeaderConfig, preset: HeaderAppearan
 
 /** Swatch background used to preview a preset. */
 export function presetSwatchSx(f: HeaderAppearanceFields): Record<string, unknown> {
-  if (f.background === "gradient")
-    return { background: `linear-gradient(${f.gradientAngle}deg, ${f.gradientFrom}, ${f.gradientTo})` };
   if (f.background === "solid") return { bgcolor: f.backgroundColor };
-  if (f.background === "transparent")
-    return { bgcolor: "transparent", border: "1px dashed", borderColor: "divider" };
-  return { background: "linear-gradient(135deg, #334155, #0f172a)" }; // blur/glass hint
+  return { background: "linear-gradient(135deg, #334155, #0f172a)" }; // glass hint
+}
+
+function luminance(hex: string): number {
+  const h = hex.replace("#", "");
+  const f = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const r = parseInt(f.slice(0, 2), 16) / 255;
+  const g = parseInt(f.slice(2, 4), 16) / 255;
+  const b = parseInt(f.slice(4, 6), 16) / 255;
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** Readable swatch foreground (for the nav-dot hints) over the preset's bg. */
+export function presetSwatchFg(f: HeaderAppearanceFields): string {
+  if (f.background === "solid" && luminance(f.backgroundColor) > 0.6) return "rgba(0,0,0,0.6)";
+  return "rgba(255,255,255,0.85)";
 }

@@ -97,22 +97,19 @@ export const headerSchema = z.object({
   showThemeSwitcher: z.boolean().default(true),
   showResumeButton: z.boolean().default(true),
   showSocialIcons: z.boolean().default(true),
-  // Appearance:
-  //  blur — translucent glass (backdrop blur); solid — flat colour;
-  //  gradient — linear gradient; transparent — no background.
-  background: z.enum(["blur", "solid", "gradient", "transparent"]).default("blur"),
+  // Appearance:  blur — translucent glass; solid — flat colour.
+  // (`.catch` keeps older saved values like "transparent"/"gradient" valid.)
+  background: z.enum(["blur", "solid", "gradient"]).catch("blur").default("blur"),
   backgroundColor: hexColor.default("#101622"),
   gradientFrom: hexColor.default("#2563eb"),
   gradientTo: hexColor.default("#8b5cf6"),
   gradientAngle: z.number().min(0).max(360).default(135),
-  // Active / hover style for the nav links.
-  navStyle: z.enum(["text", "underline", "pill"]).default("text"),
+  // Hover / active style for the nav links.
+  navStyle: z.enum(["underline", "pill"]).catch("underline").default("underline"),
   height: z.number().min(44).max(112).default(64),
-  showBorder: z.boolean().default(false),
   // Horizontal margin insets the bar from the viewport edges (great for the
-  // floating shape); horizontal padding is the inner gutter of the content.
+  // floating shape).
   marginX: z.number().min(0).max(80).default(0),
-  paddingX: z.number().min(0).max(80).default(24),
 });
 export type HeaderConfig = z.infer<typeof headerSchema>;
 
@@ -130,6 +127,8 @@ export const footerSchema = z.object({
   showSocialLinks: z.boolean().default(true),
   showQuickLinks: z.boolean().default(true),
   showContactInfo: z.boolean().default(true),
+  // Top-shadow strength above the footer (0 = none, MUI elevation scale).
+  shadow: z.number().min(0).max(24).default(0),
 });
 export type FooterConfig = z.infer<typeof footerSchema>;
 

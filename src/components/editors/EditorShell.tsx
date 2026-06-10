@@ -11,12 +11,21 @@ import LivePreview from "@/components/preview/LivePreview";
  */
 export default function EditorShell({ children }: { children: React.ReactNode }) {
   return (
-    <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row-reverse" }, flex: 1, minHeight: 0 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row-reverse" },
+        flex: 1,
+        minHeight: 0,
+        // Mobile: stack scrolls as one. Desktop: each pane scrolls on its own.
+        overflowY: { xs: "auto", md: "hidden" },
+      }}
+    >
       <Box
         sx={{
           width: { xs: "100%", md: 460 },
           flexShrink: 0,
-          overflowY: "auto",
+          overflowY: { xs: "visible", md: "auto" },
           p: { xs: 2, md: 3 },
           borderLeft: { md: 1 },
           borderColor: "divider",
